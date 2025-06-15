@@ -167,6 +167,8 @@ const InGame = ({ gameState, socket, isRocketcrab }) => {
 						className="btn-leave"
 						onClick={() =>
 							popup(t("ui.leave game"), t("ui.back"), () => {
+								socket.emit("removePlayer", me.name);
+
 								//prevents a redirect back to /[gameCode]
 								socket.off("disconnect");
 

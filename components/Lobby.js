@@ -77,6 +77,8 @@ const Lobby = ({ gameState, socket, isRocketcrab }) => {
 					<button
 						className="btn-leave"
 						onClick={() => {
+							socket.emit("removePlayer", gameState.me.name);
+
 							//prevents a redirect back to /[gameCode]
 							socket.off("disconnect");
 
