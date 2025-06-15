@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import socketIOClient from "socket.io-client";
 import Swal from "sweetalert2";
@@ -24,6 +24,8 @@ const Game = ({ loading }) => {
 	const [isRocketcrab, setIsRocketcrab] = useState(false);
 	const [isConnected, setIsConnected] = useState(socket.connected);
 
+	const hasJoinedRef = useRef(false);
+
 	const cleanup = () => {
 		socket.close();
 		setGameState({ status: "loading" });
@@ -40,10 +42,12 @@ const Game = ({ loading }) => {
 	}, []);
 
 	useEffect(() => {
-		if (!isConnected && !socket.active) {
+		if ((!isConnected && !socket.active) || !gameCode || hasJoinedRef.current) {
 			socket.connect();
 			return;
 		}
+
+		hasJoinedRef.current = true;
 
 		const { previousGameCode, previousName } = parseCookies();
 
@@ -70,17 +74,7 @@ const Game = ({ loading }) => {
 		socket.on("lockedWarning", (minutes) =>
 			Swal.fire(lockedMessage(minutes)).then(() => router.push("/")),
 		);
-
-		const urlParams = new URLSearchParams(window.location.search);
-
-		const isRocketcrab = urlParams.get("rocketcrab") === "true";
-		const name = urlParams.get("name");
-
-		if (isRocketcrab && name) {
-			setIsRocketcrab(true);
-			onNameEntry(name);
-		}
-	}, [isConnected]);
+	}, [isConnected, gameCode]);
 
 	const onNameEntry = (name) => {
 		socket.emit("name", name);

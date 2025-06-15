@@ -130,7 +130,7 @@ class Game {
 		const allPlayersGone = this.players.length === 0;
 		const allPlayersDisconnected = this.players.reduce(
 			(answer, player) => (!player.connected || !player.name) && answer,
-			true
+			true,
 		);
 
 		return allPlayersGone || allPlayersDisconnected;
@@ -147,9 +147,9 @@ class Game {
 
 	attachListenersToPlayer = (player) => {
 		const { socket } = player;
-		socket.on("name", this.setName(player));
+		socket.on("name", (name) => this.setName(player)(name));
 		socket.on("startGame", this.startGame(player));
-		socket.on("removePlayer", this.removePlayerByName);
+		socket.on("removePlayer", (name) => this.removePlayerByName(name));
 		socket.on("disconnect", this.removePlayer(player));
 		socket.on("togglePause", this.togglePauseTimer);
 		socket.on("endGame", this.endGame);
@@ -183,7 +183,7 @@ class Game {
 	isNameTaken = (nameToCheck) =>
 		this.players.reduce(
 			(answer, player) => player.name === nameToCheck || answer,
-			false
+			false,
 		);
 
 	checkIfReady = () => {
@@ -191,7 +191,7 @@ class Game {
 
 		const everyoneHasName = this.players.reduce(
 			(answer, player) => player.name && answer,
-			true
+			true,
 		);
 
 		const isReady = everyoneHasName;
@@ -244,11 +244,11 @@ class Game {
 
 		this.location = Locations.getRandomLocationFromPack(
 			locationPack,
-			includeAllSpy
+			includeAllSpy,
 		);
 		this.locationList = Locations.getLocationListFromPack(
 			locationPack,
-			includeAllSpy
+			includeAllSpy,
 		);
 	};
 
@@ -259,9 +259,8 @@ class Game {
 	setAllAsSpy = () => this.players.forEach((player) => (player.role = "spy"));
 
 	pickFirst = () => {
-		this.players[
-			Math.floor(Math.random() * this.players.length)
-		].isFirst = true;
+		this.players[Math.floor(Math.random() * this.players.length)].isFirst =
+			true;
 	};
 
 	assignRoles = () => {
