@@ -82,8 +82,17 @@ class Game {
 		}
 	}
 
-	removePlayerByName = (theName) =>
-		this.removePlayer(this.findPlayerByName(theName))();
+	removePlayerByName = (theName, wasRemovedByOthers) => {
+		const playerToRemove = this.findPlayerByName(theName);
+
+		if (wasRemovedByOthers) {
+			console.log("here");
+			console.log(playerToRemove);
+			playerToRemove.socket.emit("removedPlayerFromLobby");
+		}
+
+		this.removePlayer(playerToRemove)();
+	};
 
 	findPlayerByName = (theName) =>
 		this.players.find(({ name }) => name === theName);
@@ -149,7 +158,9 @@ class Game {
 		const { socket } = player;
 		socket.on("name", (name) => this.setName(player)(name));
 		socket.on("startGame", this.startGame(player));
-		socket.on("removePlayer", (name) => this.removePlayerByName(name));
+		socket.on("removePlayer", (name, wasRemovedByOthers = false) =>
+			this.removePlayerByName(name, wasRemovedByOthers),
+		);
 		socket.on("disconnect", this.removePlayer(player));
 		socket.on("togglePause", this.togglePauseTimer);
 		socket.on("endGame", this.endGame);

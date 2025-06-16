@@ -74,6 +74,10 @@ const Game = ({ loading }) => {
 		socket.on("lockedWarning", (minutes) =>
 			Swal.fire(lockedMessage(minutes)).then(() => router.push("/")),
 		);
+		socket.on("removedPlayerFromLobby", () => {
+			socket.off("disconnect");
+			router.push("/");
+		});
 	}, [isConnected, gameCode]);
 
 	const onNameEntry = (name) => {

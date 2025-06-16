@@ -52,7 +52,7 @@ const Lobby = ({ gameState, socket, isRocketcrab }) => {
 								href="#"
 								className="btn-remove-player"
 								data-player-id="{{ _id }}"
-								onClick={() => socket.emit("removePlayer", player.name)}
+								onClick={() => socket.emit("removePlayer", player.name, true)}
 							>
 								Remove player
 							</a>
