@@ -8,7 +8,7 @@ import AccessCode from "./AccessCode";
 import HideableContainer from "./HideableContainer";
 import { useCurrentLocale, useI18n } from "../locales";
 
-const InGame = ({ gameState, socket, isRocketcrab }) => {
+const InGame = ({ gameState, socket }) => {
 	const {
 		me,
 		location,
@@ -86,7 +86,7 @@ const InGame = ({ gameState, socket, isRocketcrab }) => {
 				</div>
 			)}
 
-			{!isRocketcrab && <AccessCode code={gameState.code} />}
+			<AccessCode code={gameState.code} />
 
 			<HideableContainer title={"Your Role"} initialHidden={false}>
 				<div className="status-container-content">
@@ -162,23 +162,22 @@ const InGame = ({ gameState, socket, isRocketcrab }) => {
 				>
 					{t("ui.end game")}
 				</button>
-				{!isRocketcrab && (
-					<button
-						className="btn-leave"
-						onClick={() =>
-							popup(t("ui.leave game"), t("ui.back"), () => {
-								socket.emit("removePlayer", me.name);
 
-								//prevents a redirect back to /[gameCode]
-								socket.off("disconnect");
+				<button
+					className="btn-leave"
+					onClick={() =>
+						popup(t("ui.leave game"), t("ui.back"), () => {
+							socket.emit("removePlayer", me.name);
 
-								Router.push("/");
-							})
-						}
-					>
-						{t("ui.leave game")}
-					</button>
-				)}
+							//prevents a redirect back to /[gameCode]
+							socket.off("disconnect");
+
+							Router.push("/");
+						})
+					}
+				>
+					{t("ui.leave game")}
+				</button>
 			</div>
 		</div>
 	);

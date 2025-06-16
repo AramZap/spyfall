@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import socketIOClient from "socket.io-client";
 import Swal from "sweetalert2";
@@ -21,7 +21,6 @@ const Game = ({ loading }) => {
 	const [gameState, setGameState] = useState({
 		status: "loading",
 	});
-	const [isRocketcrab, setIsRocketcrab] = useState(false);
 	const [isConnected, setIsConnected] = useState(socket.connected);
 
 	const hasJoinedRef = useRef(false);
@@ -114,20 +113,8 @@ const Game = ({ loading }) => {
 							socket={socket}
 						/>
 					)}
-					{showLobby && (
-						<Lobby
-							gameState={gameState}
-							socket={socket}
-							isRocketcrab={isRocketcrab}
-						/>
-					)}
-					{showGame && (
-						<InGame
-							gameState={gameState}
-							socket={socket}
-							isRocketcrab={isRocketcrab}
-						/>
-					)}
+					{showLobby && <Lobby gameState={gameState} socket={socket} />}
+					{showGame && <InGame gameState={gameState} socket={socket} />}
 				</>
 			)}
 		</>

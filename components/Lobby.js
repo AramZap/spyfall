@@ -4,11 +4,10 @@ import { useI18n } from "../locales";
 import { logEvent } from "../utils/analytics";
 
 import Settings from "./Settings";
-import ThanksForPlaying from "./ThanksForPlaying";
 import AccessCode from "./AccessCode";
 import HideableContainer from "./HideableContainer";
 
-const Lobby = ({ gameState, socket, isRocketcrab }) => {
+const Lobby = ({ gameState, socket }) => {
 	const playerList = gameState.players.map((player) => ({
 		...player,
 		isMe: player.name === gameState.me.name,
@@ -27,7 +26,7 @@ const Lobby = ({ gameState, socket, isRocketcrab }) => {
 		<>
 			<h4>{t("ui.welcome to spyfall")}</h4>
 
-			{!isRocketcrab && <AccessCode code={gameState.code} />}
+			<AccessCode code={gameState.code} />
 
 			<hr />
 
@@ -37,7 +36,7 @@ const Lobby = ({ gameState, socket, isRocketcrab }) => {
 						{player.name}
 						{!player.name && <i>Joining...</i>}
 
-						{player.isMe && !isRocketcrab && (
+						{player.isMe && (
 							<a
 								href="#"
 								className="btn-edit-player"
@@ -73,23 +72,22 @@ const Lobby = ({ gameState, socket, isRocketcrab }) => {
 				>
 					{t("ui.start game")}
 				</button>
-				{!isRocketcrab && (
-					<button
-						className="btn-leave"
-						onClick={() => {
-							socket.emit("removePlayer", gameState.me.name);
 
-							//prevents a redirect back to /[gameCode]
-							socket.off("disconnect");
+				<button
+					className="btn-leave"
+					onClick={() => {
+						socket.emit("removePlayer", gameState.me.name);
 
-							Router.push("/");
-						}}
-					>
-						{t("ui.leave game")}
-					</button>
-				)}
+						//prevents a redirect back to /[gameCode]
+						socket.off("disconnect");
+
+						Router.push("/");
+					}}
+				>
+					{t("ui.leave game")}
+				</button>
 			</div>
-			{gameState.currentRoundNum > 1 && <ThanksForPlaying />}
+			{/* {gameState.currentRoundNum > 1 && <ThanksForPlaying />} */}
 		</>
 	);
 };

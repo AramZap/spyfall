@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useI18n } from "../locales";
@@ -8,9 +8,6 @@ import Loading from "../components/Loading";
 import Swal from "sweetalert2";
 import { lockedMessage } from "../utils/misc";
 
-const isSpyfallTK = () =>
-	window.location.href.startsWith("https://spyfall.tannerkrewson.com");
-
 const Home = ({ loading }) => {
 	const router = useRouter();
 	const [newGameLoading, setNewGameLoading] = useState(false);
@@ -18,11 +15,6 @@ const Home = ({ loading }) => {
 	const onNewGame = async (e) => {
 		e.preventDefault();
 		setNewGameLoading(true);
-
-		if (isSpyfallTK()) {
-			router.push("https://rocketcrab.com/transfer/tk-spyfall");
-			return;
-		}
 
 		try {
 			const res = await fetch(window.location.origin + "/new", {
@@ -70,9 +62,7 @@ const Home = ({ loading }) => {
 			{!loading && (
 				<>
 					<div className="button-container">
-						<Link
-							href={isSpyfallTK() ? "https://rocketcrab.com/join" : "/join"}
-						>
+						<Link href="/join">
 							<button id="btn-join-game" className="btn-large">
 								{t("ui.join game")}
 							</button>
@@ -81,33 +71,11 @@ const Home = ({ loading }) => {
 							{t("ui.new game")}
 						</button>
 					</div>
-					<p>Powered by 🚀🦀</p>
 					<div className="button-container-vertical">
 						<div style={{ width: "100%" }}>
 							<Link href="/how-to-play">
 								<button className="btn-small btn-vertical">How to Play</button>
 							</Link>
-						</div>
-						<a
-							href="https://github.com/tannerkrewson/spyfall/blob/dev/README.md#history"
-							target="_blank"
-							rel="noopener noreferrer"
-							style={{ width: "100%" }}
-						>
-							<button className="btn-small btn-vertical">Crabhat?</button>
-						</a>
-						<a
-							href="https://docs.google.com/forms/d/e/1FAIpQLSe0lIL4ZYxyKDNHqv25VkLqOg7tk2VhOcOA-yDAuYxKFx6kyw/viewform?usp=sf_link"
-							target="_blank"
-							rel="noopener noreferrer"
-							style={{ width: "100%" }}
-						>
-							<button className="btn-small btn-vertical">
-								Submit Feedback
-							</button>
-						</a>
-						<div style={{ marginTop: "1em" }}>
-							<BuyMe />
 						</div>
 					</div>
 				</>
